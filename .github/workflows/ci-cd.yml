@@ -6,12 +6,23 @@ on:
       - main
 
 jobs:
-  build-and-test:
+  build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
-      - name: Build and start containers
+
+      # Instalar Docker Compose
+      - name: Install Docker Compose
         run: |
-          docker-compose up --build -d
+          sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose --version
+
+      # Construir y levantar contenedores
+      - name: Docker Compose Build & Up
+        run: docker-compose up --build -d
+
+      # Verificar contenedores activos
       - name: Check running containers
         run: docker-compose ps
